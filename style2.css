@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#sidebar .inner {
+    text-align: right;
+    width: 50%;
+    margin: 50px auto 0 auto;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+body {
+    background-image: url(./images/infinity-5423635.jpg);
+}
+
+#wrapper {
+    width: 80%;
+    margin: 0 auto;
+    background: #b3cb94;
+    height: 100%;
+}
+
+#wrapper .inner #header .logo {
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#wrapper .inner #header ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background: #b7aaa4;
+    height: 30px;
+}
+
+#wrapper .inner #header ul li {
+    margin: 0 20px;
+}
+
+#banner img {
+    width: 100%;
+    height: 200px;
+}
+
+#banner p {
+    width: 60%;
+}
+
+.content h1 {
+    font-weight: 600;
+    text-align: right;
+    margin: 25px;
+}
+
+.content {
+    float: right;
+}
+
+.content p {
+    margin: 45px;
+}
+
+.flex1 {
+    margin: 5% 20%;
+    /* border: 1px solid #999; */
+    background: white;
+    text-align: right;
+}
+
+.flex {
+    text-align: right;
+    margin: 0 50px;
+}
+
+.flex p {
+    width: 300px;
+    height: 200px;
+}
+
+.posts img {
+    transition: all 1s ease;
+}
+
+#banner #menu {
+    margin: 0 50px;
+}
+
+#banner #search {
+    margin: 0 50px;
+}
+
+#banner #search input {
+    width: 300px;
+    height: 50px;
+}
+
+#banner #menu ul {
+    display: flex;
+}
+
+#banner #menu ul li {
+    margin: 0 30px 30px 0;
+}
