@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>跳跳兔</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    canvas {
+      background-color: #eee;
+      border: 1px solid #ccc;
+    }
+
+    #gameOverScreen {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    #gameOverScreen h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    #gameOverScreen p {
+      font-size: 24px;
+      margin-bottom: 40px;
+    }
+
+    #restartButton {
+      font-size: 24px;
+      background-color: #fff;
+      color: #000;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="480" height="320"></canvas>
+  <div id="gameOverScreen">
+    <h1>游戏结束</h1>
+    <p>得分：<span id="gameOverScore">0</span></p>
+    <p>用时：<span id="gameOverTime">0</span>秒</p>
+    <button id="restartButton">重新开始</button>
+  </div>
+  <script>
+    // 获取canvas元素和上下文对象
+    var canvas = document.getElementById("gameCanvas");
+    var ctx = canvas.getContext("2d");
+
+    // 定义兔子的属性
+    var rabbit = {
+      x: canvas.width / 2 - 15,
+      y: canvas.height - 30,
+      width: 30,
+      height: 30,
+      speed: 5,
+      jumping: false
+    };
+
+    // 定义障碍物的属性
+    var obstacles = [];
+    var obstacleWidth = 30;
+    var obstacleHeight = 30;
+    var obstacleSpeed = 2;
+
+    // 定义游戏状态
+    var gameOver = false;
+    var gameTime = 0;
+    var gameScore = 0;
+    var gameInterval;
+
+    // 绘制兔子
+    function drawRabbit() {
+      ctx.beginPath();
+      ctx.rect(rabbit.x, rabbit.y, rabbit.width, rabbit.height);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // 绘制障碍物
+    function drawObstacles() {
+      for (var i = 0; i < obstacles.length; i++) {
+        ctx.beginPath();
+        ctx.rect(obstacles[i].x, obstacles[i].y, obstacleWidth, obstacleHeight);
+        ctx.fillStyle = "#FF0000";
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+
+    // 更新兔子的位置
+    function updateRabbitPosition() {
+      if (rabbit.jumping) {
+        rabbit.y -= rabbit.speed;
+        if (rabbit.y < 0) {
+          rabbit.jumping = false;
+          rabbit.y = 0;
+        }
+      } else {
+        rabbit.y += rabbit.speed;
+        if (rabbit.y > canvas.height - rabbit.height) {
+          // gameOver = true;
+          // clearInterval(gameInterval);
+          // showGameOverScreen();
+            rabbit.y = canvas.height - rabbit.height
+        }
+      }
+    }
+
+    // 更新障碍物的位置
+    function updateObstaclePosition() {
+      for (var i = 0; i < obstacles.length; i++) {
+        obstacles[i].x -= obstacleSpeed;
+        if (obstacles[i].x < 0) {
+          obstacles.splice(i, 1);
+          i--;
+        } else if (obstacles[i].x == rabbit.x + rabbit.width) {
+          gameScore++;
+          var gameOverScore = document.getElementById("gameOverScore");
+          gameOverScore.innerHTML = gameScore;
+        }
+      }
+
+      // 每5秒生成一个新的障碍物
+      if (gameTime > 5 && Math.random() < 0.01) {
+        var obstacleY = Math.floor(Math.random() * (canvas.height - obstacleHeight));
+        obstacles.push({
+          x: canvas.width,
+          y: obstacleY
+        });
+      }
+    }
+
+    // 检测兔子和障碍物之间的碰撞
+    function checkCollision() {
+      for (var i = 0; i < obstacles.length; i++) {
+        if (rabbit.x < obstacles[i].x + obstacleWidth &&
+            rabbit.x + rabbit.width > obstacles[i].x &&
+            rabbit.y < obstacles[i].y + obstacleHeight &&
+            rabbit.y + rabbit.height > obstacles[i].y) {
+          gameOver = true;
+          clearInterval(gameInterval);
+          showGameOverScreen();
+        }
+      }
+    }
+
+    // 显示游戏结束界面
+    function showGameOverScreen() {
+      var gameOverScreen = document.getElementById("gameOverScreen");
+      gameOverScreen.style.display = "block";
+      var gameOverScore = document.getElementById("gameOverScore");
+      gameOverScore.innerHTML = gameScore;
+      var gameOverTime = document.getElementById("gameOverTime");
+      gameOverTime.innerHTML = gameTime.toFixed(2);
+      var restartButton = document.getElementById("restartButton");
+      restartButton.onclick = function() {
+        location.reload();
+      };
+    }
+
+    // 游戏主循环
+    function gameLoop() {
+      if (!gameOver) {
+        gameTime += 0.01;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawRabbit();
+        drawObstacles();
+        updateRabbitPosition();
+        updateObstaclePosition();
+        checkCollision();
+      } else {
+        clearInterval(gameInterval);
+        showGameOverScreen();
+      }
+    }
+
+    // 监听鼠标点击事件，使兔子跳起来
+    canvas.addEventListener("mousedown", function(event) {
+      if (!rabbit.jumping) {
+        rabbit.jumping = true;
+        gameScore++;
+        var gameOverScore = document.getElementById("gameOverScore");
+        gameOverScore.innerHTML = gameScore;
+      }
+    });
+
+    // 开始游戏
+    gameInterval = setInterval(gameLoop, 10);
+
+  </script>
+</body>
+</html>
